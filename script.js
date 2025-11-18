@@ -11,8 +11,11 @@ class TableEditor {
     }
 
     initEventListeners() {
-        // Paste and parse
-        document.getElementById('parseBtn').addEventListener('click', () => this.parseAndCreateTable());
+        // Paste and parse - trigger automatically on paste
+        this.pasteArea.addEventListener('paste', () => {
+            // Use setTimeout to allow the paste to complete before parsing
+            setTimeout(() => this.parseAndCreateTable(), 10);
+        });
         
         // Table actions
         document.getElementById('addRowBtn').addEventListener('click', () => this.addRow());
@@ -53,6 +56,28 @@ class TableEditor {
                 e.preventDefault();
                 this.addQuickClass(btn.dataset.class);
             });
+        });
+        
+        // Global paste handler for Paste Content textarea
+        document.addEventListener('keydown', (e) => {
+            // Check for Ctrl+V (Windows/Linux) or Cmd+V (Mac)
+            if ((e.ctrlKey || e.metaKey) && e.key === 'v') {
+                // Don't interfere if user is typing in the editor or other text areas
+                const activeElement = document.activeElement;
+                const isEditorActive = activeElement === this.editor || this.editor.contains(activeElement);
+                const isHtmlOutputActive = activeElement === this.htmlOutput;
+                const isClassInputActive = activeElement === document.getElementById('classInput');
+                
+                // Only redirect paste to pasteArea if not in these specific elements
+                if (!isEditorActive && !isHtmlOutputActive && !isClassInputActive && activeElement !== this.pasteArea) {
+                    e.preventDefault();
+                    this.pasteArea.focus();
+                    // Let the default paste action happen in the textarea
+                    setTimeout(() => {
+                        this.pasteArea.focus();
+                    }, 0);
+                }
+            }
         });
         
         // Set default full width
@@ -126,11 +151,17 @@ class TableEditor {
             editorCol.classList.toggle('full-width');
             if (editorCol.classList.contains('full-width')) {
                 previewCol.classList.remove('full-width');
+                previewCol.style.display = 'none';
+            } else {
+                previewCol.style.display = '';
             }
         } else {
             previewCol.classList.toggle('full-width');
             if (previewCol.classList.contains('full-width')) {
                 editorCol.classList.remove('full-width');
+                editorCol.style.display = 'none';
+            } else {
+                editorCol.style.display = '';
             }
         }
     }
@@ -618,7 +649,7 @@ class TableEditor {
         // Get the entire content, not just the table (to preserve wrappers)
         const content = this.editor.innerHTML.trim();
         
-        if (content && content !== '<p class="text-muted">Click "Parse & Create Table" or paste content above to start editing.</p>') {
+        if (content && content !== '<p class="text-muted">Paste content in the Paste Content area above to start editing.</p>') {
             // Clean up selection classes for output
             const tempDiv = document.createElement('div');
             tempDiv.innerHTML = content;
@@ -675,23 +706,49 @@ class TableEditor {
     copyHtml() {
         const html = this.htmlOutput.value;
         if (!html) {
-            alert('No table to copy. Create a table first.');
+            this.showToast('No table to copy. Create a table first.', 'warning');
             return;
         }
 
         navigator.clipboard.writeText(html).then(() => {
-            alert('HTML copied to clipboard! Ready to paste into WordPress.');
+            this.showToast('HTML copied to clipboard! Ready to paste into WordPress.', 'success');
         }).catch(err => {
             // Fallback for older browsers
             this.htmlOutput.select();
             document.execCommand('copy');
-            alert('HTML copied to clipboard! Ready to paste into WordPress.');
+            this.showToast('HTML copied to clipboard! Ready to paste into WordPress.', 'success');
         });
+    }
+
+    showToast(message, type = 'success') {
+        const toastEl = document.getElementById('copyToast');
+        const toastHeader = toastEl.querySelector('.toast-header');
+        const toastBody = toastEl.querySelector('.toast-body');
+        
+        // Update toast styling based on type
+        toastHeader.classList.remove('bg-success', 'bg-warning', 'bg-danger');
+        if (type === 'success') {
+            toastHeader.classList.add('bg-success');
+        } else if (type === 'warning') {
+            toastHeader.classList.add('bg-warning');
+        } else if (type === 'danger') {
+            toastHeader.classList.add('bg-danger');
+        }
+        
+        // Update message
+        toastBody.textContent = message;
+        
+        // Show toast
+        const toast = new bootstrap.Toast(toastEl, {
+            autohide: true,
+            delay: 3000
+        });
+        toast.show();
     }
 
     clearTable() {
         if (confirm('Are you sure you want to clear the table?')) {
-            this.editor.innerHTML = '<p>Click "Parse & Create Table" or paste content above to start editing.</p>';
+            this.editor.innerHTML = '<p class="text-muted">Paste content in the Paste Content area above to start editing.</p>';
             this.htmlOutput.value = '';
             this.clearSelection();
             this.currentCell = null;

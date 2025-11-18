@@ -35,11 +35,8 @@
                     <i class="bi bi-chevron-up"></i>
                 </button>
             </div>
-            <div class="card-body" id="pasteContent">
-                <textarea id="pasteArea" class="form-control mb-2" placeholder="Paste HTML, TSV, CSV, or Google Sheets data here..." rows="4"></textarea>
-                <button id="parseBtn" class="btn btn-primary">
-                    <i class="bi bi-table"></i> Parse & Create Table
-                </button>
+                        <div class="card-body" id="pasteContent">
+                <textarea id="pasteArea" class="form-control mb-2" placeholder="Paste HTML, TSV, CSV, or Google Sheets data here (auto-converts on paste)..." rows="4"></textarea>
             </div>
         </div>
 
@@ -131,7 +128,7 @@
                     </div>
                     <div class="card-body p-2">
                         <div id="editor" contenteditable="true" class="editor border rounded p-3">
-                            <p class="text-muted">Click "Parse & Create Table" or paste content above to start editing.</p>
+                            <p class="text-muted">Paste content in the Paste Content area above to start editing.</p>
                         </div>
                     </div>
                 </div>
@@ -162,6 +159,20 @@
                 <button id="clearBtn" class="btn btn-outline-danger">
                     <i class="bi bi-trash"></i> Clear Table
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="copyToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-success text-white">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                <strong class="me-auto">Success</strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                HTML copied to clipboard! Ready to paste into WordPress.
             </div>
         </div>
     </div>
