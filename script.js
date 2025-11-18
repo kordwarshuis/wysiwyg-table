@@ -46,6 +46,54 @@ class TableEditor {
         document.getElementById('toggleWidthBtn').addEventListener('click', () => this.toggleContainerWidth());
         document.getElementById('toggleEditorWidth').addEventListener('click', () => this.toggleColumnWidth('editor'));
         document.getElementById('togglePreviewWidth').addEventListener('click', () => this.toggleColumnWidth('preview'));
+        
+        // Quick class buttons
+        document.querySelectorAll('.quick-class').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.addQuickClass(btn.dataset.class);
+            });
+        });
+        
+        // Set default full width
+        this.setDefaultFullWidth();
+    }
+    
+    setDefaultFullWidth() {
+        const container1 = document.getElementById('mainContainer');
+        const container2 = document.getElementById('mainContainer2');
+        container1.classList.add('full-width');
+        container2.classList.add('full-width');
+    }
+    
+    addQuickClass(className) {
+        if (!this.currentCell && this.selectedCells.size === 0) {
+            alert('Please select a cell first.');
+            return;
+        }
+        
+        const target = document.getElementById('classTarget').value;
+        
+        switch (target) {
+            case 'cell':
+                const cellsToStyle = this.selectedCells.size > 0 
+                    ? Array.from(this.selectedCells) 
+                    : [this.currentCell];
+                this.addClassToElements(cellsToStyle, className);
+                break;
+            case 'row':
+                const row = this.currentCell.closest('tr');
+                this.addClassToElements([row], className);
+                break;
+            case 'column':
+                const colIndex = Array.from(this.currentCell.parentElement.children).indexOf(this.currentCell);
+                const table = this.getTable();
+                const colCells = Array.from(table.querySelectorAll('tr')).map(row => row.children[colIndex]);
+                this.addClassToElements(colCells, className);
+                break;
+        }
+        
+        this.updateOutput();
     }
 
     togglePasteSection() {

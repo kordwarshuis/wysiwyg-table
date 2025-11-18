@@ -12,7 +12,7 @@
 </head>
 <body>
     <!-- Header -->
-    <header class="bg-gradient text-white py-4 mb-4">
+    <header class="bg-gradient py-4 mb-4">
         <div class="container-fluid" id="mainContainer">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
@@ -87,7 +87,7 @@
                     <!-- Styling -->
                     <div class="col-lg-6">
                         <h6 class="mb-2 text-muted">Styling</h6>
-                        <div class="input-group input-group-sm">
+                        <div class="input-group input-group-sm mb-2">
                             <input type="text" id="classInput" class="form-control" placeholder="Class name(s)">
                             <select id="classTarget" class="form-select" style="max-width: 140px;">
                                 <option value="cell">Selected Cells</option>
@@ -100,6 +100,18 @@
                             <button id="removeClassBtn" class="btn btn-outline-secondary" title="Remove Class">
                                 <i class="bi bi-dash-lg"></i>
                             </button>
+                        </div>
+                        <div class="btn-group btn-group-sm w-100" role="group">
+                            <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-tags"></i> Quick Classes
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item quick-class" href="#" data-class="capability-adv">Capability Advance</a></li>
+                                <li><a class="dropdown-item quick-class" href="#" data-class="capability-ref">Capability Refine</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item quick-class" href="#" data-class="adoption-ase">Adoption Assess</a></li>
+                                <li><a class="dropdown-item quick-class" href="#" data-class="adoption-avo">Adoption Advocate</a></li>
+                            </ul>
                         </div>
                     </div>
                 </div>

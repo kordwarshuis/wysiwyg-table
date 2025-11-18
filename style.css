@@ -6,6 +6,11 @@ body {
 /* Header Gradient */
 .bg-gradient {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #ffffff !important;
+}
+
+.bg-gradient * {
+    color: #ffffff !important;
 }
 
 /* Container Width Control */
@@ -48,7 +53,10 @@ body {
 
 #editorColumn.full-width ~ #previewColumn,
 #previewColumn.full-width ~ #editorColumn {
-    display: none;
+    position: absolute;
+    visibility: hidden;
+    pointer-events: none;
+    opacity: 0;
 }
 
 /* Editor */
@@ -118,5 +126,57 @@ body {
 /* Utility */
 .font-monospace {
     font-family: 'Courier New', Courier, monospace !important;
+}
+
+/* Custom Capability & Adoption Classes (from style.custom.css) */
+.capability-adv,
+.capability-ref,
+.adoption-ase,
+.adoption-avo {
+    position: relative;
+    border-radius: 6px;
+    padding: 1.5em 1em 1em 1em;
+    margin-bottom: 1em;
+    overflow: hidden;
+}
+
+.capability-adv {
+    background: #0E5A63;
+    color: #FFFFFF;
+}
+
+.capability-ref {
+    background: #A6D9D0;
+    color: #0E5A63;
+}
+
+.adoption-ase {
+    background: #1F3F77;
+    color: #FFFFFF;
+}
+
+.adoption-avo {
+    background: #B9CBEF;
+    color: #1F3F77;
+}
+
+/* Top-right label */
+.capability-adv::before,
+.capability-ref::before,
+.adoption-ase::before,
+.adoption-avo::before {
+    content: attr(data-label);
+    position: absolute;
+    top: 0.4em;
+    right: 0.7em;
+    font-size: 0.7em;
+    font-weight: bold;
+    opacity: 0.7;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 0.1em 0.5em;
+    border-radius: 2em;
+    pointer-events: none;
 }
 
