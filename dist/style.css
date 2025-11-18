@@ -11,10 +11,8 @@ body {
 /* Header (site-wide) */
 header.bg-gradient {
     color: #fff;
-    /* solid color fallback */
-    background-color: #667eea;
-    /* Restored first-commit gradient colors */
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    /* Solid dark background for reliable contrast */
+    background: #667eea;
     box-shadow: 0 6px 18px rgba(61, 84, 153, 0.12);
     border-bottom: 1px solid rgba(0,0,0,0.06);
 }
