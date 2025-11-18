@@ -14,8 +14,13 @@ class TableEditor {
     
     saveToStorage() {
         try {
-            const content = this.editor.innerHTML;
-            localStorage.setItem(this.storageKey, content);
+            // Clean up selection classes before saving
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = this.editor.innerHTML;
+            tempDiv.querySelectorAll('.selected').forEach(cell => {
+                cell.classList.remove('selected');
+            });
+            localStorage.setItem(this.storageKey, tempDiv.innerHTML);
         } catch (e) {
             console.error('Failed to save to localStorage:', e);
         }
