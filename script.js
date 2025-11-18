@@ -174,12 +174,19 @@ class TableEditor {
     }
 
     parseHtmlTable(html) {
-        // Extract table from HTML
+        // Preserve all HTML including wrappers like <figure>, etc.
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = html;
         const table = tempDiv.querySelector('table');
         
         if (table) {
+            // Check if table has a parent wrapper (like figure)
+            const wrapper = table.closest('figure, div[class*="wp-"]');
+            if (wrapper && wrapper.parentElement === tempDiv) {
+                // Return the wrapper with the table inside
+                return wrapper.outerHTML;
+            }
+            // Return just table if no wrapper found
             return table.outerHTML;
         }
         
@@ -608,14 +615,17 @@ class TableEditor {
     }
 
     updateOutput() {
-        const table = this.getTable();
-        if (table) {
+        // Get the entire content, not just the table (to preserve wrappers)
+        const content = this.editor.innerHTML.trim();
+        
+        if (content && content !== '<p class="text-muted">Click "Parse & Create Table" or paste content above to start editing.</p>') {
             // Clean up selection classes for output
-            const clone = table.cloneNode(true);
-            clone.querySelectorAll('.selected').forEach(cell => {
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = content;
+            tempDiv.querySelectorAll('.selected').forEach(cell => {
                 cell.classList.remove('selected');
             });
-            this.htmlOutput.value = this.formatHtml(clone.outerHTML);
+            this.htmlOutput.value = this.formatHtml(tempDiv.innerHTML);
         } else {
             this.htmlOutput.value = '';
         }
@@ -625,6 +635,10 @@ class TableEditor {
         // Basic HTML formatting for readability
         return html
             .replace(/></g, '>\n<')
+            .replace(/<figure/g, '\n<figure')
+            .replace(/<\/figure>/g, '\n</figure>\n')
+            .replace(/<table/g, '\n<table')
+            .replace(/<\/table>/g, '\n</table>\n')
             .replace(/<tr>/g, '\n  <tr>')
             .replace(/<\/tr>/g, '</tr>\n')
             .replace(/<td>/g, '\n    <td>')
