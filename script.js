@@ -6,8 +6,39 @@ class TableEditor {
         this.htmlOutput = document.getElementById('htmlOutput');
         this.selectedCells = new Set();
         this.currentCell = null;
+        this.storageKey = 'wysiwyg-table-content';
         
         this.initEventListeners();
+        this.loadFromStorage();
+    }
+    
+    saveToStorage() {
+        try {
+            const content = this.editor.innerHTML;
+            localStorage.setItem(this.storageKey, content);
+        } catch (e) {
+            console.error('Failed to save to localStorage:', e);
+        }
+    }
+    
+    loadFromStorage() {
+        try {
+            const saved = localStorage.getItem(this.storageKey);
+            if (saved && saved !== '<p class="text-muted">Paste content in the Paste Content area above to start editing.</p>') {
+                this.editor.innerHTML = saved;
+                this.updateOutput();
+            }
+        } catch (e) {
+            console.error('Failed to load from localStorage:', e);
+        }
+    }
+    
+    clearStorage() {
+        try {
+            localStorage.removeItem(this.storageKey);
+        } catch (e) {
+            console.error('Failed to clear localStorage:', e);
+        }
     }
 
     initEventListeners() {
@@ -39,7 +70,10 @@ class TableEditor {
         
         // Cell selection
         this.editor.addEventListener('click', (e) => this.handleCellClick(e));
-        this.editor.addEventListener('input', () => this.updateOutput());
+        this.editor.addEventListener('input', () => {
+            this.updateOutput();
+            this.saveToStorage();
+        });
         
         // Multi-select with Shift
         this.editor.addEventListener('mousedown', (e) => this.handleMouseDown(e));
@@ -119,6 +153,7 @@ class TableEditor {
         }
         
         this.updateOutput();
+        this.saveToStorage();
     }
 
     togglePasteSection() {
@@ -189,6 +224,7 @@ class TableEditor {
 
         this.editor.innerHTML = table;
         this.updateOutput();
+        this.saveToStorage();
         this.pasteArea.value = '';
         
         // Auto-collapse paste section after successful parse
@@ -354,6 +390,7 @@ class TableEditor {
 
         tbody.appendChild(newRow);
         this.updateOutput();
+        this.saveToStorage();
     }
 
     addColumn() {
@@ -372,6 +409,7 @@ class TableEditor {
         });
 
         this.updateOutput();
+        this.saveToStorage();
     }
 
     deleteRow() {
@@ -395,6 +433,7 @@ class TableEditor {
         this.clearSelection();
         this.currentCell = null;
         this.updateOutput();
+        this.saveToStorage();
     }
 
     deleteColumn() {
@@ -421,6 +460,7 @@ class TableEditor {
         this.clearSelection();
         this.currentCell = null;
         this.updateOutput();
+        this.saveToStorage();
     }
 
     mergeCells() {
@@ -462,6 +502,7 @@ class TableEditor {
 
         this.clearSelection();
         this.updateOutput();
+        this.saveToStorage();
     }
 
     splitCell() {
@@ -518,6 +559,7 @@ class TableEditor {
         }
 
         this.updateOutput();
+        this.saveToStorage();
     }
 
     moveColumn(direction) {
@@ -551,6 +593,7 @@ class TableEditor {
         });
 
         this.updateOutput();
+        this.saveToStorage();
     }
 
     addClass() {
@@ -589,6 +632,7 @@ class TableEditor {
 
         document.getElementById('classInput').value = '';
         this.updateOutput();
+        this.saveToStorage();
     }
 
     removeClass() {
@@ -627,6 +671,7 @@ class TableEditor {
 
         document.getElementById('classInput').value = '';
         this.updateOutput();
+        this.saveToStorage();
     }
 
     addClassToElements(elements, className) {
@@ -752,6 +797,7 @@ class TableEditor {
             this.htmlOutput.value = '';
             this.clearSelection();
             this.currentCell = null;
+            this.clearStorage();
         }
     }
 }
