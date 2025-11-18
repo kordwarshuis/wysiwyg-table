@@ -8,6 +8,53 @@ body {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
+/* Header (site-wide) */
+header.bg-gradient {
+    color: #fff;
+    /* solid color fallback */
+    background-color: #667eea;
+    /* Restored first-commit gradient colors */
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    box-shadow: 0 6px 18px rgba(61, 84, 153, 0.12);
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+header.bg-gradient .h3,
+header.bg-gradient h1,
+header.bg-gradient h2,
+header.bg-gradient p,
+header.bg-gradient .mb-0 {
+    color: #ffffff;
+}
+
+/* Header content alignment */
+header .container-fluid {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+/* Title styling */
+header .h3 {
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+
+/* Subtitle */
+header p.small {
+    opacity: 0.95;
+    color: rgba(255,255,255,0.95);
+}
+
+/* Toggle width button on header */
+#toggleWidthBtn {
+    border: 1px solid rgba(255,255,255,0.18);
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+}
+#toggleWidthBtn:hover {
+    background: rgba(255,255,255,0.14);
+}
+
 /* Container Width Control */
 #mainContainer,
 #mainContainer2 {
