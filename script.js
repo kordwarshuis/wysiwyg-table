@@ -40,6 +40,51 @@ class TableEditor {
         
         // Multi-select with Shift
         this.editor.addEventListener('mousedown', (e) => this.handleMouseDown(e));
+        
+        // UI Toggles
+        document.getElementById('togglePasteBtn').addEventListener('click', () => this.togglePasteSection());
+        document.getElementById('toggleWidthBtn').addEventListener('click', () => this.toggleContainerWidth());
+        document.getElementById('toggleEditorWidth').addEventListener('click', () => this.toggleColumnWidth('editor'));
+        document.getElementById('togglePreviewWidth').addEventListener('click', () => this.toggleColumnWidth('preview'));
+    }
+
+    togglePasteSection() {
+        const section = document.getElementById('pasteSection');
+        const btn = document.getElementById('togglePasteBtn');
+        const icon = btn.querySelector('i');
+        
+        section.classList.toggle('collapsed');
+        
+        if (section.classList.contains('collapsed')) {
+            icon.className = 'bi bi-chevron-down';
+        } else {
+            icon.className = 'bi bi-chevron-up';
+        }
+    }
+
+    toggleContainerWidth() {
+        const container1 = document.getElementById('mainContainer');
+        const container2 = document.getElementById('mainContainer2');
+        
+        container1.classList.toggle('full-width');
+        container2.classList.toggle('full-width');
+    }
+
+    toggleColumnWidth(column) {
+        const editorCol = document.getElementById('editorColumn');
+        const previewCol = document.getElementById('previewColumn');
+        
+        if (column === 'editor') {
+            editorCol.classList.toggle('full-width');
+            if (editorCol.classList.contains('full-width')) {
+                previewCol.classList.remove('full-width');
+            }
+        } else {
+            previewCol.classList.toggle('full-width');
+            if (previewCol.classList.contains('full-width')) {
+                editorCol.classList.remove('full-width');
+            }
+        }
     }
 
     parseAndCreateTable() {
@@ -66,6 +111,18 @@ class TableEditor {
         this.editor.innerHTML = table;
         this.updateOutput();
         this.pasteArea.value = '';
+        
+        // Auto-collapse paste section after successful parse
+        setTimeout(() => {
+            const section = document.getElementById('pasteSection');
+            const btn = document.getElementById('togglePasteBtn');
+            const icon = btn.querySelector('i');
+            
+            if (!section.classList.contains('collapsed')) {
+                section.classList.add('collapsed');
+                icon.className = 'bi bi-chevron-down';
+            }
+        }, 300);
     }
 
     parseHtmlTable(html) {
@@ -419,14 +476,18 @@ class TableEditor {
             return;
         }
 
-        if (!this.currentCell) {
+        if (!this.currentCell && this.selectedCells.size === 0) {
             alert('Please select a cell first.');
             return;
         }
 
         switch (target) {
             case 'cell':
-                this.addClassToElements([this.currentCell], className);
+                // Apply to all selected cells, or just current cell if none selected
+                const cellsToStyle = this.selectedCells.size > 0 
+                    ? Array.from(this.selectedCells) 
+                    : [this.currentCell];
+                this.addClassToElements(cellsToStyle, className);
                 break;
             case 'row':
                 const row = this.currentCell.closest('tr');
@@ -453,14 +514,18 @@ class TableEditor {
             return;
         }
 
-        if (!this.currentCell) {
+        if (!this.currentCell && this.selectedCells.size === 0) {
             alert('Please select a cell first.');
             return;
         }
 
         switch (target) {
             case 'cell':
-                this.removeClassFromElements([this.currentCell], className);
+                // Remove from all selected cells, or just current cell if none selected
+                const cellsToUnstyle = this.selectedCells.size > 0 
+                    ? Array.from(this.selectedCells) 
+                    : [this.currentCell];
+                this.removeClassFromElements(cellsToUnstyle, className);
                 break;
             case 'row':
                 const row = this.currentCell.closest('tr');

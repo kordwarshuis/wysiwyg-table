@@ -1,6 +1,8 @@
 # WYSIWYG Table Editor
 
-A lightweight, standalone WYSIWYG table editor for creating WordPress-ready HTML tables. Built with vanilla JavaScript - no framework dependencies.
+A lightweight, standalone WYSIWYG table editor for creating WordPress-ready HTML tables. Built with vanilla JavaScript and Bootstrap 5 for a modern, responsive UI.
+
+**Note:** This project uses vanilla JavaScript with Bootstrap for UI components - no heavy WYSIWYG frameworks like TinyMCE or CKEditor are used. This keeps it fast, lightweight, and easy to deploy.
 
 ## Features
 
@@ -12,15 +14,22 @@ A lightweight, standalone WYSIWYG table editor for creating WordPress-ready HTML
 
 ✅ **Table Editing**
 - Add/remove rows and columns
-- Merge and split cells
+- Merge and split cells (multi-cell selection with Shift+Click)
 - Move columns left/right
-- Real-time visual editing
+- Real-time visual editing with contenteditable
 
 ✅ **Styling & Classes**
-- Add CSS classes to individual cells
+- Add CSS classes to multiple selected cells
 - Add CSS classes to entire rows
 - Add CSS classes to entire columns
 - Perfect for WordPress table styling
+
+✅ **Modern UI**
+- Bootstrap 5 responsive design
+- Side-by-side editor and HTML preview
+- Collapsible paste section (auto-hides after use)
+- Toggle between standard and full viewport width
+- Individual panel width toggles
 
 ✅ **Export**
 - Copy clean HTML ready for WordPress
@@ -140,11 +149,12 @@ wysiwyg-table/
 
 ## Technical Details
 
-- **Size**: ~30KB total (uncompressed)
-- **Dependencies**: None (vanilla JavaScript)
-- **Framework**: None required
+- **Size**: ~40KB total HTML/CSS/JS (uncompressed, excluding Bootstrap CDN)
+- **Dependencies**: Bootstrap 5 (via CDN, no installation needed)
+- **Framework**: Vanilla JavaScript + Bootstrap UI components
 - **Server**: None required (static files)
 - **Browser API**: Uses modern JavaScript (ES6+)
+- **No WYSIWYG Framework**: Intentionally avoids heavy editors like TinyMCE/CKEditor
 
 ## Tips & Tricks
 
