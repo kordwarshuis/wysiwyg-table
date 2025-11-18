@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WYSIWYG Table Editor</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 WYSIWYG Table Editor</h1>
+            <p>Create and edit HTML tables for WordPress</p>
+        </header>
+
+        <div class="toolbar">
+            <div class="toolbar-section">
+                <h3>Paste Content</h3>
+                <textarea id="pasteArea" placeholder="Paste HTML, TSV, CSV, or Google Sheets data here..." rows="5"></textarea>
+                <button id="parseBtn" class="btn btn-primary">Parse & Create Table</button>
+            </div>
+
+            <div class="toolbar-section">
+                <h3>Table Actions</h3>
+                <div class="button-group">
+                    <button id="addRowBtn" class="btn">+ Add Row</button>
+                    <button id="addColBtn" class="btn">+ Add Column</button>
+                    <button id="deleteRowBtn" class="btn btn-danger">− Delete Row</button>
+                    <button id="deleteColBtn" class="btn btn-danger">− Delete Column</button>
+                </div>
+                <div class="button-group">
+                    <button id="mergeCellsBtn" class="btn">🔗 Merge Cells</button>
+                    <button id="splitCellBtn" class="btn">✂️ Split Cell</button>
+                </div>
+                <div class="button-group">
+                    <button id="moveColLeftBtn" class="btn">← Move Column Left</button>
+                    <button id="moveColRightBtn" class="btn">→ Move Column Right</button>
+                </div>
+            </div>
+
+            <div class="toolbar-section">
+                <h3>Styling</h3>
+                <div class="class-controls">
+                    <input type="text" id="classInput" placeholder="Enter class name(s)">
+                    <select id="classTarget">
+                        <option value="cell">Selected Cell</option>
+                        <option value="row">Current Row</option>
+                        <option value="column">Current Column</option>
+                    </select>
+                    <button id="addClassBtn" class="btn btn-primary">Add Class</button>
+                    <button id="removeClassBtn" class="btn">Remove Class</button>
+                </div>
+            </div>
+
+            <div class="toolbar-section">
+                <h3>Export</h3>
+                <button id="copyHtmlBtn" class="btn btn-success">📋 Copy HTML</button>
+                <button id="clearBtn" class="btn btn-danger">🗑️ Clear Table</button>
+            </div>
+        </div>
+
+        <div class="editor-container">
+            <h3>Table Editor</h3>
+            <div id="editor" contenteditable="true" class="editor">
+                <p>Click "Parse & Create Table" or paste content above to start editing.</p>
+            </div>
+        </div>
+
+        <div class="preview-container">
+            <h3>HTML Output (for WordPress)</h3>
+            <textarea id="htmlOutput" readonly rows="10"></textarea>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

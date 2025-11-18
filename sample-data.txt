@@ -1,0 +1,36 @@
+<!-- Sample data to test the table editor -->
+
+<!-- Example 1: TSV Data (like Google Sheets) -->
+Product	Price	Stock	Category
+Laptop	$999	15	Electronics
+Mouse	$25	150	Accessories
+Keyboard	$75	80	Accessories
+
+<!-- Example 2: CSV Data -->
+Name,Email,Phone,City
+John Doe,john@example.com,555-0100,New York
+Jane Smith,jane@example.com,555-0101,Los Angeles
+Bob Johnson,bob@example.com,555-0102,Chicago
+
+<!-- Example 3: HTML Table -->
+<table>
+  <thead>
+    <tr>
+      <th>Company</th>
+      <th>Contact</th>
+      <th>Country</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Acme Corp</td>
+      <td>Alice Brown</td>
+      <td>USA</td>
+    </tr>
+    <tr>
+      <td>Global Inc</td>
+      <td>Charlie Davis</td>
+      <td>UK</td>
+    </tr>
+  </tbody>
+</table>

@@ -1,0 +1,276 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: #f5f5f5;
+    padding: 20px;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 30px;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 2em;
+    margin-bottom: 10px;
+}
+
+header p {
+    opacity: 0.9;
+    font-size: 1.1em;
+}
+
+.toolbar {
+    padding: 30px;
+    background: #fafafa;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.toolbar-section {
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.toolbar-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.toolbar-section h3 {
+    color: #333;
+    margin-bottom: 15px;
+    font-size: 1.1em;
+}
+
+#pasteArea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 13px;
+    margin-bottom: 10px;
+    resize: vertical;
+}
+
+#pasteArea:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.button-group:last-child {
+    margin-bottom: 0;
+}
+
+.btn {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    background: #e0e0e0;
+    color: #333;
+    transition: all 0.2s;
+}
+
+.btn:hover {
+    background: #d0d0d0;
+    transform: translateY(-1px);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.btn-primary {
+    background: #667eea;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #5568d3;
+}
+
+.btn-success {
+    background: #48bb78;
+    color: white;
+}
+
+.btn-success:hover {
+    background: #38a169;
+}
+
+.btn-danger {
+    background: #f56565;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #e53e3e;
+}
+
+.class-controls {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+#classInput {
+    flex: 1;
+    min-width: 200px;
+    padding: 10px;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+#classInput:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+#classTarget {
+    padding: 10px;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    background: white;
+    cursor: pointer;
+}
+
+#classTarget:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.editor-container {
+    padding: 30px;
+}
+
+.editor-container h3 {
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.editor {
+    min-height: 400px;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    padding: 20px;
+    background: white;
+    overflow: auto;
+}
+
+.editor:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.editor table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 10px 0;
+}
+
+.editor td,
+.editor th {
+    border: 1px solid #ddd;
+    padding: 10px;
+    min-width: 50px;
+    position: relative;
+}
+
+.editor td:hover,
+.editor th:hover {
+    background: #f0f0f0;
+}
+
+.editor td.selected,
+.editor th.selected {
+    background: #e3f2fd;
+    outline: 2px solid #2196F3;
+}
+
+.preview-container {
+    padding: 30px;
+    background: #fafafa;
+    border-top: 2px solid #e0e0e0;
+}
+
+.preview-container h3 {
+    color: #333;
+    margin-bottom: 15px;
+}
+
+#htmlOutput {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 13px;
+    background: white;
+    resize: vertical;
+}
+
+#htmlOutput:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+    
+    .toolbar,
+    .editor-container,
+    .preview-container {
+        padding: 20px;
+    }
+    
+    .button-group {
+        flex-direction: column;
+    }
+    
+    .btn {
+        width: 100%;
+    }
+    
+    .class-controls {
+        flex-direction: column;
+    }
+    
+    #classInput {
+        width: 100%;
+    }
+}

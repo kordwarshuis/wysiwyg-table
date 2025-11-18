@@ -1,0 +1,17 @@
+{
+  "name": "wysiwyg-table-editor",
+  "version": "1.0.0",
+  "description": "A WYSIWYG table editor for creating WordPress-ready HTML tables",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx serve .",
+    "start": "npx serve .",
+    "build": "echo 'No build needed - static files ready for deployment'"
+  },
+  "keywords": ["table", "editor", "wysiwyg", "wordpress"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "serve": "^14.2.1"
+  }
+}
