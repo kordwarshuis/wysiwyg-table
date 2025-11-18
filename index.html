@@ -17,7 +17,7 @@
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <h1 class="h3 mb-1">📊 KERI conference WYSIWYG Table Editor</h1>
-                    <p class="mb-0 small">Create and edit HTML tables for the KERI conference WordPress site</p>
+                    <p class="mb-0"><span class="fs-3">❶</span> Copy the table HTML in Wordpress, <span class="fs-3">❷</span> then paste it here to start editing, <span class="fs-3">❸</span> then paste it back to Wordpress when done.</p>
                 </div>
                 <button id="toggleWidthBtn" class="btn btn-outline-light btn-sm">
                     <i class="bi bi-arrows-angle-expand"></i> Toggle Width
@@ -30,8 +30,8 @@
         <!-- Paste Content Section (Collapsible) -->
         <div class="card mb-3" id="pasteSection">
             <div class="card-header d-flex justify-content-between align-items-center bg-light">
-                <h6 class="mb-0">📋 Paste Content</h6>
-                <p>❶ Copy the table HTML in Wordpress, ❷ then paste it here to start editing, ❸ then paste it back to Wordpress when done.</p>
+                <h6 class="mb-0"><span class="fs-3">❶</span> 📋 Paste Content</h6>
+                
                 <button class="btn btn-sm btn-outline-secondary" id="togglePasteBtn">
                     <i class="bi bi-chevron-up"></i>
                 </button>
@@ -122,7 +122,7 @@
             <div class="col-lg-6" id="editorColumn">
                 <div class="card h-100">
                     <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                        <h6 class="mb-0">✏️ Table Editor</h6>
+                        <h6 class="mb-0"><span class="fs-3">❷</span> ✏️ Table Editor</h6>
                         <button class="btn btn-sm btn-outline-secondary" id="toggleEditorWidth" title="Toggle Full Width">
                             <i class="bi bi-arrows-angle-expand"></i>
                         </button>
@@ -139,7 +139,7 @@
             <div class="col-lg-6" id="previewColumn">
                 <div class="card h-100">
                     <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                        <h6 class="mb-0">📄 HTML Output (for WordPress)</h6>
+                        <h6 class="mb-0"><span class="fs-3">❸</span> 📄 HTML Output (for WordPress)</h6>
                         <button class="btn btn-sm btn-outline-secondary" id="togglePreviewWidth" title="Toggle Full Width">
                             <i class="bi bi-arrows-angle-expand"></i>
                         </button>
@@ -154,7 +154,7 @@
         <!-- Export Actions -->
         <div class="card mb-4">
             <div class="card-body text-center py-3">
-                <button id="copyHtmlBtn" class="btn btn-success me-2">
+                <button id="copyHtmlBtn" class="btn btn-success me-2"><span class="fs-3">❸</span>
                     <i class="bi bi-clipboard-check"></i> Copy HTML for WordPress
                 </button>
                 <button id="clearBtn" class="btn btn-outline-danger">
