@@ -57,12 +57,21 @@ Then open http://localhost:3000 in your browser.
 
 ## Deployment
 
+### Quick Deploy
+
+Use the pre-built distribution files:
+
+1. **Build distribution**: Run `./build-dist.sh` (or copy files manually)
+2. **Upload files**: Upload all files from the `dist/` directory to your web host
+   - `index.html`
+   - `style.css`
+   - `style.custom.css`
+   - `script.js`
+3. **Access**: Open `index.html` in any browser
+
 ### Static Hosting
 
-This project consists of static HTML/CSS/JS files and can be deployed to any web hosting:
-
-1. **Upload files**: Copy `index.html`, `style.css`, and `script.js` to your web host
-2. **Access**: Open `index.html` in any browser
+This project consists of static HTML/CSS/JS files and can be deployed to any web hosting
 
 ### Compatible Hosts
 - GitHub Pages

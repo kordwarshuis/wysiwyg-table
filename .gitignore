@@ -1,6 +1,8 @@
 node_modules/
 .DS_Store
 *.log
+!rsync-error.log
 .env
-dist/
 .history
+build-dist.sh
+rsync-error.log

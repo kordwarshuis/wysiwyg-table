@@ -1,0 +1,177 @@
+body {
+    background: #f8f9fa;
+    min-height: 100vh;
+}
+
+/* Header Gradient */
+.bg-gradient {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Container Width Control */
+#mainContainer,
+#mainContainer2 {
+    max-width: 1400px;
+    transition: max-width 0.3s ease;
+}
+
+#mainContainer.full-width,
+#mainContainer2.full-width {
+    max-width: 100%;
+}
+
+/* Paste Section Collapsible */
+#pasteSection {
+    transition: all 0.3s ease;
+}
+
+#pasteSection.collapsed #pasteContent {
+    display: none;
+}
+
+#pasteSection.collapsed {
+    margin-bottom: 1rem;
+}
+
+#pasteArea {
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    resize: vertical;
+}
+
+/* Column Width Toggle */
+#editorColumn.full-width,
+#previewColumn.full-width {
+    flex: 0 0 100%;
+    max-width: 100%;
+}
+
+#editorColumn.full-width ~ #previewColumn,
+#previewColumn.full-width ~ #editorColumn {
+    position: absolute;
+    visibility: hidden;
+    pointer-events: none;
+    opacity: 0;
+}
+
+/* Editor */
+.editor {
+    min-height: 500px;
+    max-height: 600px;
+    overflow: auto;
+    background: white;
+}
+
+.editor:focus {
+    outline: 2px solid #667eea;
+    outline-offset: -2px;
+}
+
+/* Table in Editor */
+.editor table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 10px 0;
+}
+
+.editor td,
+.editor th {
+    border: 1px solid #dee2e6;
+    padding: 12px;
+    min-width: 60px;
+    position: relative;
+}
+
+.editor td:hover,
+.editor th:hover {
+    background: #f8f9fa;
+}
+
+.editor td.selected,
+.editor th.selected {
+    background: #cfe2ff !important;
+    outline: 2px solid #0d6efd;
+    outline-offset: -2px;
+}
+
+/* HTML Output */
+#htmlOutput {
+    height: 100%;
+    min-height: 500px;
+    max-height: 600px;
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    resize: vertical;
+}
+
+#htmlOutput:focus {
+    background: white;
+    border-color: #667eea;
+}
+
+/* Responsive */
+@media (max-width: 991px) {
+    #editorColumn,
+    #previewColumn {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
+
+/* Utility */
+.font-monospace {
+    font-family: 'Courier New', Courier, monospace !important;
+}
+
+/* Custom Capability & Adoption Classes (from style.custom.css) */
+.capability-adv,
+.capability-ref,
+.adoption-ase,
+.adoption-avo {
+    position: relative;
+    border-radius: 6px;
+    padding: 1.5em 1em 1em 1em;
+    margin-bottom: 1em;
+    overflow: hidden;
+}
+
+.capability-adv {
+    background: #0E5A63;
+    color: #FFFFFF;
+}
+
+.capability-ref {
+    background: #A6D9D0;
+    color: #0E5A63;
+}
+
+.adoption-ase {
+    background: #1F3F77;
+    color: #FFFFFF;
+}
+
+.adoption-avo {
+    background: #B9CBEF;
+    color: #1F3F77;
+}
+
+/* Top-right label */
+.capability-adv::before,
+.capability-ref::before,
+.adoption-ase::before,
+.adoption-avo::before {
+    content: attr(data-label);
+    position: absolute;
+    top: 0.4em;
+    right: 0.7em;
+    font-size: 0.7em;
+    font-weight: bold;
+    opacity: 0.7;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 0.1em 0.5em;
+    border-radius: 2em;
+    pointer-events: none;
+}
+
