@@ -7,9 +7,15 @@ class TableEditor {
         this.selectedCells = new Set();
         this.currentCell = null;
         this.storageKey = 'wysiwyg-table-content';
+        this.history = [];
+        this.historyIndex = -1;
+        this.historyDebounceTimer = null;
+        this.maxHistory = 100;
         
         this.initEventListeners();
         this.loadFromStorage();
+        this.recordHistory(true);
+        this.updateUndoButtonState();
     }
     
     saveToStorage() {
@@ -64,6 +70,8 @@ class TableEditor {
         // Column movement
         document.getElementById('moveColLeftBtn').addEventListener('click', () => this.moveColumn('left'));
         document.getElementById('moveColRightBtn').addEventListener('click', () => this.moveColumn('right'));
+        document.getElementById('moveRowUpBtn').addEventListener('click', () => this.moveRow('up'));
+        document.getElementById('moveRowDownBtn').addEventListener('click', () => this.moveRow('down'));
         
         // Class management
         document.getElementById('addClassBtn').addEventListener('click', () => this.addClass());
@@ -78,6 +86,7 @@ class TableEditor {
         this.editor.addEventListener('input', () => {
             this.updateOutput();
             this.saveToStorage();
+            this.scheduleHistorySnapshot();
         });
         
         // Multi-select with Shift
@@ -88,6 +97,11 @@ class TableEditor {
         document.getElementById('toggleWidthBtn').addEventListener('click', () => this.toggleContainerWidth());
         document.getElementById('toggleEditorWidth').addEventListener('click', () => this.toggleColumnWidth('editor'));
         document.getElementById('togglePreviewWidth').addEventListener('click', () => this.toggleColumnWidth('preview'));
+
+        const undoButton = document.getElementById('undoBtn');
+        if (undoButton) {
+            undoButton.addEventListener('click', () => this.undo());
+        }
         
         // Quick class buttons
         document.querySelectorAll('.quick-class').forEach(btn => {
@@ -116,6 +130,18 @@ class TableEditor {
                         this.pasteArea.focus();
                     }, 0);
                 }
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+                const activeElement = document.activeElement;
+                const isInputField = activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA');
+                if (activeElement === this.pasteArea || isInputField) {
+                    return;
+                }
+                e.preventDefault();
+                this.undo();
             }
         });
         
@@ -159,6 +185,7 @@ class TableEditor {
         
         this.updateOutput();
         this.saveToStorage();
+        this.recordHistory();
     }
 
     togglePasteSection() {
@@ -228,8 +255,11 @@ class TableEditor {
         }
 
         this.editor.innerHTML = table;
+        this.clearSelection();
+        this.currentCell = null;
         this.updateOutput();
         this.saveToStorage();
+        this.recordHistory();
         this.pasteArea.value = '';
         
         // Auto-collapse paste section after successful parse
@@ -379,6 +409,8 @@ class TableEditor {
         if (!table) {
             this.editor.innerHTML = this.createDefaultTable(3, 3);
             this.updateOutput();
+            this.saveToStorage();
+            this.recordHistory();
             return;
         }
 
@@ -396,6 +428,7 @@ class TableEditor {
         tbody.appendChild(newRow);
         this.updateOutput();
         this.saveToStorage();
+        this.recordHistory();
     }
 
     addColumn() {
@@ -403,6 +436,8 @@ class TableEditor {
         if (!table) {
             this.editor.innerHTML = this.createDefaultTable(3, 3);
             this.updateOutput();
+            this.saveToStorage();
+            this.recordHistory();
             return;
         }
 
@@ -415,6 +450,7 @@ class TableEditor {
 
         this.updateOutput();
         this.saveToStorage();
+        this.recordHistory();
     }
 
     deleteRow() {
@@ -439,6 +475,7 @@ class TableEditor {
         this.currentCell = null;
         this.updateOutput();
         this.saveToStorage();
+        this.recordHistory();
     }
 
     deleteColumn() {
@@ -466,6 +503,7 @@ class TableEditor {
         this.currentCell = null;
         this.updateOutput();
         this.saveToStorage();
+        this.recordHistory();
     }
 
     mergeCells() {
@@ -508,6 +546,7 @@ class TableEditor {
         this.clearSelection();
         this.updateOutput();
         this.saveToStorage();
+        this.recordHistory();
     }
 
     splitCell() {
@@ -565,40 +604,140 @@ class TableEditor {
 
         this.updateOutput();
         this.saveToStorage();
+        this.recordHistory();
     }
 
     moveColumn(direction) {
         if (!this.currentCell) {
-            alert('Please select a cell in the column you want to move.');
+            this.showToast('Select a cell in the column you want to move.', 'warning');
             return;
         }
 
         const table = this.getTable();
-        const cellIndex = Array.from(this.currentCell.parentElement.children).indexOf(this.currentCell);
-        const rows = Array.from(table.querySelectorAll('tr'));
-
-        const newIndex = direction === 'left' ? cellIndex - 1 : cellIndex + 1;
-        
-        if (newIndex < 0 || newIndex >= rows[0].children.length) {
-            alert('Cannot move column further in that direction.');
+        if (!table) {
+            this.showToast('Create a table before moving columns.', 'warning');
             return;
         }
 
+        const referenceRow = this.currentCell.parentElement;
+        const referenceCells = Array.from(referenceRow.children);
+        const cellIndex = referenceCells.indexOf(this.currentCell);
+        if (cellIndex === -1) return;
+
+        const newIndex = direction === 'left' ? cellIndex - 1 : cellIndex + 1;
+        
+        if (newIndex < 0 || newIndex >= referenceCells.length) {
+            this.showToast('Cannot move column further in that direction.', 'warning');
+            return;
+        }
+
+        const rows = Array.from(table.querySelectorAll('tr'));
         rows.forEach(row => {
             const cells = Array.from(row.children);
+            const movingCell = cells[cellIndex];
+            if (!movingCell) {
+                return;
+            }
+
             if (direction === 'left') {
-                row.insertBefore(cells[cellIndex], cells[newIndex]);
+                const targetCell = cells[newIndex];
+                if (targetCell) {
+                    row.insertBefore(movingCell, targetCell);
+                }
             } else {
-                if (newIndex + 1 < cells.length) {
-                    row.insertBefore(cells[cellIndex], cells[newIndex + 1]);
+                const targetCell = cells[newIndex];
+                if (targetCell && targetCell.nextElementSibling) {
+                    row.insertBefore(movingCell, targetCell.nextElementSibling);
+                } else if (targetCell) {
+                    row.appendChild(movingCell);
                 } else {
-                    row.appendChild(cells[cellIndex]);
+                    row.appendChild(movingCell);
                 }
             }
         });
 
         this.updateOutput();
         this.saveToStorage();
+        this.recordHistory();
+        this.showToast(direction === 'left' ? 'Column moved left.' : 'Column moved right.', 'success');
+    }
+
+    computeRowBlockBounds(rows) {
+        const startBounds = rows.map((_, idx) => idx);
+        const endBounds = rows.map((_, idx) => idx);
+        rows.forEach((row, rowIndex) => {
+            Array.from(row.children).forEach(cell => {
+                const rowspan = parseInt(cell.getAttribute('rowspan') || 1);
+                if (rowspan > 1) {
+                    const endIndex = Math.min(rows.length - 1, rowIndex + rowspan - 1);
+                    for (let r = rowIndex; r <= endIndex; r++) {
+                        startBounds[r] = Math.min(startBounds[r], rowIndex);
+                        endBounds[r] = Math.max(endBounds[r], endIndex);
+                    }
+                }
+            });
+        });
+        return { startBounds, endBounds };
+    }
+
+    moveRow(direction) {
+        if (!this.currentCell) {
+            this.showToast('Select a cell in the row you want to move.', 'warning');
+            return;
+        }
+
+        const row = this.currentCell.closest('tr');
+        if (!row) {
+            this.showToast('Could not determine the selected row.', 'warning');
+            return;
+        }
+
+        const section = row.parentElement;
+        if (!section) {
+            this.showToast('Unable to move this row.', 'warning');
+            return;
+        }
+
+        const rows = Array.from(section.children).filter(child => child.tagName === 'TR');
+        const rowIndex = rows.indexOf(row);
+        if (rowIndex === -1) {
+            this.showToast('Unable to locate the selected row.', 'warning');
+            return;
+        }
+
+        const { startBounds, endBounds } = this.computeRowBlockBounds(rows);
+        const blockStart = startBounds[rowIndex];
+        const blockEnd = endBounds[rowIndex];
+        const blockRows = rows.slice(blockStart, blockEnd + 1);
+
+        if (direction === 'up') {
+            if (blockStart === 0) {
+                this.showToast('Row is already at the top of this section.', 'warning');
+                return;
+            }
+            const insertBeforeIndex = startBounds[blockStart - 1];
+            const referenceRow = rows[insertBeforeIndex];
+            blockRows.forEach(blockRow => {
+                section.insertBefore(blockRow, referenceRow);
+            });
+            this.showToast('Row moved up.', 'success');
+        } else {
+            if (blockEnd === rows.length - 1) {
+                this.showToast('Row is already at the bottom of this section.', 'warning');
+                return;
+            }
+            const targetEndIndex = endBounds[blockEnd + 1];
+            const referenceRow = rows[targetEndIndex];
+            const insertBeforeNode = referenceRow.nextElementSibling;
+            blockRows.forEach(blockRow => {
+                section.insertBefore(blockRow, insertBeforeNode);
+            });
+            this.showToast('Row moved down.', 'success');
+        }
+
+        this.updateOutput();
+        this.saveToStorage();
+        this.recordHistory();
     }
 
     addClass() {
@@ -638,6 +777,7 @@ class TableEditor {
         document.getElementById('classInput').value = '';
         this.updateOutput();
         this.saveToStorage();
+        this.recordHistory();
     }
 
     removeClass() {
@@ -677,6 +817,7 @@ class TableEditor {
         document.getElementById('classInput').value = '';
         this.updateOutput();
         this.saveToStorage();
+        this.recordHistory();
     }
 
     addClassToElements(elements, className) {
@@ -753,6 +894,68 @@ class TableEditor {
         return formatted.replace(/\n\s*\n\s*\n/g, '\n\n').trim();
     }
 
+    getSerializableContent() {
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = this.editor.innerHTML;
+        tempDiv.querySelectorAll('.selected').forEach(cell => {
+            cell.classList.remove('selected');
+        });
+        return tempDiv.innerHTML.trim();
+    }
+
+    recordHistory(force = false) {
+        const snapshot = this.getSerializableContent();
+        if (!force && this.history.length && this.history[this.historyIndex] === snapshot) {
+            return;
+        }
+
+        if (this.historyIndex < this.history.length - 1) {
+            this.history = this.history.slice(0, this.historyIndex + 1);
+        }
+
+        this.history.push(snapshot);
+
+        if (this.history.length > this.maxHistory) {
+            const excess = this.history.length - this.maxHistory;
+            this.history.splice(0, excess);
+        }
+
+        this.historyIndex = this.history.length - 1;
+        this.updateUndoButtonState();
+    }
+
+    scheduleHistorySnapshot() {
+        if (this.historyDebounceTimer) {
+            clearTimeout(this.historyDebounceTimer);
+        }
+
+        this.historyDebounceTimer = setTimeout(() => {
+            this.recordHistory();
+        }, 400);
+    }
+
+    updateUndoButtonState() {
+        const undoButton = document.getElementById('undoBtn');
+        if (undoButton) {
+            undoButton.disabled = this.historyIndex <= 0;
+        }
+    }
+
+    undo() {
+        if (this.historyIndex <= 0) {
+            return;
+        }
+
+        this.historyIndex--;
+        const previous = this.history[this.historyIndex] || '';
+        this.editor.innerHTML = previous;
+        this.clearSelection();
+        this.currentCell = null;
+        this.updateOutput();
+        this.saveToStorage();
+        this.updateUndoButtonState();
+    }
+
     copyHtml() {
         const html = this.htmlOutput.value;
         if (!html) {
@@ -803,6 +1006,7 @@ class TableEditor {
             this.clearSelection();
             this.currentCell = null;
             this.clearStorage();
+            this.recordHistory();
         }
     }
 }

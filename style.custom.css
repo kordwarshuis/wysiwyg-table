@@ -49,3 +49,32 @@
     border-radius: 2em;
     pointer-events: none;
 }
+
+.toolbar-section h6 {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.compact-styling .compact-input {
+    max-width: 280px;
+}
+
+.compact-styling .compact-select {
+    min-width: 160px;
+}
+
+.quick-class-chip {
+    flex: 1 1 150px;
+    white-space: nowrap;
+}
+
+@media (max-width: 576px) {
+    .compact-styling .compact-input {
+        max-width: 100%;
+    }
+
+    .compact-styling .compact-select {
+        min-width: 100%;
+    }
+}
